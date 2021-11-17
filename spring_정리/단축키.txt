@@ -13,3 +13,7 @@ iter + tab
 
 soutv + tab
 system.out.println();
+
+
+해당 변수 자세히 보기...? 정의된곳으로 가기
+컨트롤 + b

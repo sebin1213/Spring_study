@@ -1,0 +1,175 @@
+## 빈 생명주기 콜백
+
+데이터 베이스 커넥션 풀이나, 네트워크 소켓처럼 애플리케이션의 시작시점에 필요한 연결을 미리 해두고, 애플리케이션 종료 시점에 연결을 모두 종료하는 작업을 진행하려면 **객체의 초기화와 종료 작업**이 필요하다.
+
+스프링을 통해 이러한 **초기화 작업과 종료 작업**을 어떻게 진행하는지 알아볼 것이다.
+
+간단하게 외부 네트워크에 미리 연결하는 객체를 하나 생성한다고 가정해보자. 실제로 네트워크에 연결하는 것은 아니고 단순히 문자만 출력하도록 했다. 이 NetworkClient는 애플리케이션 **시작 시점에 `connect()`를 호출**해서 연결을 맺어두어야하고, 애플리케이션이 **종료되면 `disconnect()`를 호출**해서 연결을 끊어야한다.
+
+**NetworkClient**
+
+```java
+public class NetworkClient {
+     
+    private String url;
+    
+    public NetworkClient() {
+        System.out.println("생성자 호출, url" + url);
+        connect();
+        call("초기화 연결 메시지");
+    }
+    
+    // setter 주입 (자동 주입아니라 수동 주입)
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    //서비스 시작시 호출
+    public void connect() {
+        System.out.println("connect = " + url);
+    }
+    
+    public void call(String message) {
+        System.out.println("call: " + url + " message = " + message);
+    }
+    
+    //서비스 종료시 호출
+    public void disconnect() {
+        System.out.println("close: " + url);
+    }
+}
+```
+
+**스프링 환경설정과 실행**
+
+```java
+public class BeanLifeCycleTest {
+
+	@Test
+	public void lifeCycleTest() {
+		ConfigurableApplicationContext ac = new AnnotationConfigApplicationContext(LifeCycleConfig.class);
+		NetworkClient client = ac.getBean(NetworkClient.class);
+		ac.close(); //스프링 컨테이너를 종료, ConfigurableApplicationContext 필요
+	}
+
+	@Configuration
+	static class LifeCycleConfig {
+
+		@Bean
+		public NetworkClient networkClient() {
+			NetworkClient networkClient = new NetworkClient();
+			//의존관계 주입부분 (자동주입 아니라 수동주입)
+			networkClient.setUrl("http://hello-spring.dev");
+			return networkClient;
+		}
+	}
+}
+```
+
+실행해보면 다음과 같이 이상한 결과가 나온다
+
+```null
+생성자 호출, url = null
+connect: null
+call: null message = 초기화 연결 메시지
+```
+
+생성자 부분을 보면 url 정보없이 connect가 호출되는 것을 확인할 수 있다.
+너무 당연한 이야기지만 위에서 정의한 NetworkClient에서는 객체를 생성하는 단계에는 url이 없고, 객체를 생성한 다음에 외부에서 **수정자 주입**을 통해서 `setUrl()`이 호출되어야 url이 존재하게 된다
+
+스프링 빈은 간단하게 다음과 같은 라이프사이클을 가진다
+
+> 객체 생성 ➡ 의존관계 주입
+
+스프링 빈은 **객체를 생성하고, 의존관계 주입이 다 끝난 다음에야** **필요한 데이터를 사용**할 수 있는 준비가 완료된다.
+
+따라서 **초기화 작업**은 **의존관계 주입이 모두 완료되고 난 다음**에 호출해야한다. 그런데 *개발자가 의존관계 주입이 모두 완료된 시점을 어떻게 알 수 있을까???*
+
+> 스프링은 ***의존관계 주입이 완료\*되면 스프링 빈에게 \*콜백 메서드\*를 통해서 초기화 시점을 알려주는** 다양한 기능을 제공한다.
+
+또한 스프링은 **스프링 컨테이너가 종료되기 직전에 소멸 콜백**을 준다. 따라서 안전하게 종료 작업을 진행할 수 있다.
+
+## 스프링 빈의 이벤트 라이프 사이클
+
+> 스프링 컨테이너 생성
+> 🔽
+> 스프링 빈 생성
+> 🔽
+> 의존관계 주입
+> 🔽
+> 초기화 콜백
+> 🔽
+> 필요한 데이터 사용
+> 🔽
+> 소멸전 콜백
+> 🔽
+> 스프링 종료
+
+- 초기화 콜백 : 빈이 생성되고, 빈의 의존관계 주입이 완료된 후 호출
+- 소멸전 콜백 : 빈이 소멸되기 직전에 호출
+
+스프링은 다양한 방식으로 생명주기 콜백을 지원한다.
+
+> **참고: 객체의 생성과 초기화를 분리하자**
+>
+> - 생성자는 **필수정보(파라미터)를 받고**, **메모리를 할당해서 객체를 생성**하는 책임을 가진다.
+> - 반면에 초기화는 이렇게 **생성된 값들을 활용**하여 외부 커넥션을 연결하는 등의 **무거운 동작을 수행**한다.
+>
+> 따라서 생성자 안에서 무거운 초기화작업을 같이 하는 것보다는 **객체를 생성**하는 부분과 **초기화** 하는 부분을 명확하게 나누는 것이 유지보수 관점에서 좋다. 물론 초기화 작업이 내부 값들만 약간 변경하는 정도로 단순한 경우에는 생성자에서 한번에 다 처리하는게 나을 수 있다.
+
+> 참고로 싱글톤 빈들은 스프링 컨테이너가 종료될 때 싱글톤 빈들도 함께 종료되기 때문에 스프링 컨테이너가 종료되기 직전에 소멸전 콜백이 일어난다.
+>
+> 싱글톤처럼 컨테이너의 시작과 종료까지 생존하는 빈도 있지만, 생명주기가 짧은 빈들도 있는데 이 빈들은 컨테이너와 무관하게 해당 빈이 종료되기 직전에 소멸전 콜백이 일어난다.
+
+## 빈 생명주기 콜백 종류
+
+**스프링 빈은 크게 3가지 방법으로 빈 생명주기 콜백을 지원한다.**
+
+- 인터페이스(InitializingBean, DisposableBean) : 잘 안쓴다
+- 설정 정보에 초기화 메서드, 종료 메서드 지정
+- @PostConstruct, @PreDestroy 애노테이션 지원 : 제일 많이 사용
+
+### 인터페이스 Initializing Bean, Disposable Bean
+
+- `Initializing Bean`은 `afterProperiesSet()`메서드로 초기화를 지원한다. (의존관계 주입이 끝난 후 호출되는 콜백 메서드이다.)
+- `DisposableBean`은 `destroy()`메서드로 소멸을 지원한다. (빈이 소멸되기 직전에 호출되는 콜백 메서드이다.)
+
+#### 😥 초기화, 소멸 인터페이스의 단점
+
+- 이 인터페이스는 스프링 전용 인터페이스이다.
+  - `org.springframework.beans.factory.DisposableBean;`
+  - `org.springframework.beans.factory.InitializingBean;`
+- 따라서 해당 코드 가 스프링 전용 인터페이스에 의존한다.
+  - 스프링 없는 환경에서의 단위테스트가 힘들다.
+- 초기화, 소멸 메서드의 이름을 변경할 수 없다. (인터페이스에 정의된 메서드를 오버라이딩 해야한다.)
+- 내가 코드를 고칠 수 없는 외부 라이브러리에 적용할 수 없다.
+
+> 참고로 인터페이스를 사용하는 초기화, 종료 방법은 스프링 초창기에 나온 방법들이고, 지금은 더 나은 방법들이 있어서 거의 사용하지 않는다.
+
+### 빈 등록 초기화, 소멸 메서드 지정
+
+빈 등록 설정 정보에 `@Bean(initMethod="init", destroyMethod="close")`처럼 초기화, 소멸 메서드를 지정할 수 있다.
+
+- 메서드 이름을 자유롭게 줄 수 있다. (설정정보에 자유롭게 입력하면 된다.)
+- 스프링 빈이 스프링 코드에 의존하지 않는다.
+- **코드가 아니라 설정정보를 사용하기 때문에 코드를 고칠 수 없는 외부 라이브러리에도 초기화, 종료 메서드를 적용할 수 있다.**
+
+#### 😎 종료 메서드 추론
+
+- `@Bean`의 `destroyMethod` 속성에는 아주 특별한 기능이 있다.
+- 라이브러리는 대부분 `close`,`shutdown`이라는 이름의 종료 메서드를 사용한다.
+- 따라서 직접 스프링 빈으로 등록하면 종료 메서드는 따로 적어주지 않아도 잘 동작한다.
+- 추론기능을 사용하기 싫으면 `destroyMethod=""`처럼 공백으로 지정하면된다.
+
+### 애노테이션 @PostConstruct, @PreDestroy
+
+`@PostConstruct`, `@PreDestroy`애노테이션을 사용하면 가장 편리하게 초기화와 종료를 실행할 수 있다.
+
+- 최신 스프링에서 가장 권장하는 방법이다.
+- 애노테이션 하나만 붙이면 되므로 매우 편리하다. (인터페이스 구현하고 오버라이딩 할 필요없다.)
+- 스프링에 종속적인 기술이 아닌 자바 표준이다.
+  - `javax.annotation.PostConstruct`
+- 따라서 스프링이 아닌 다른 컨테이너에서도 동작한다.
+- 컴포넌트 스캔과 잘 어울린다. (@Bean 설정이 아니니까!)
+- 유일한 단점은 외부 라이브러리에는 적용하지 못한다는 점이다.
+- 외부 라이브러리를 초기화, 종료해야한다면 @Bean의 기능을 이용하자!

@@ -281,6 +281,8 @@ bean = class hello.core.AppConfig$$EnhancedBySpringCGLIB$$bd479d70
 
 ![img](https://media.vlpt.us/images/syleemk/post/034c21a6-ad52-4149-94b0-7bc3d76c7f0c/image.png)
 
+appconfig가 cglib라는 바이트코드 조작 랩을 가지고 상속받아서 다른 클래스인 appconfig@cglib을 만든다.
+
 이름은 appConfig 이름을 가져가고, 실제 등록되는 스프링 빈은 @CGLIB 클래스의 인스턴스가 등록된다.
 
 스프링이 CGLIB 바이트코드 조작 라이브러리를 사용하여 만든 클래스가 바로 스프링 빈이 싱글톤이 보장되도록 해준다. 아마도 다음과 같이 바이트 코드를 조작해서 작성되어있을 것이다. (실제로는 CGLIB의 내부 기술을 사용하는데 매우 복잡하다.)
@@ -301,6 +303,7 @@ public MemberRepository memberRepository() {
 
 - @Bean이 등록된 메서드마다 이미 스프링 빈이 존재하면 존재하는 빈을 반환하고, 스프링 빈이 없으면 생성해서 스프링 빈으로 등록하고 반환하는 코드가 **동적으로 만들어진다.**
 - 덕분에 싱글톤이 보장되는 것이다.
+- AppConfig@CGLIB 이 memberRepository()를 오버라이드  함 memorymemberRepository가 이미 스프링 컨테이너에 등록되어있으면 스프링 컨테이너에서 찾아서 반환하고 스프링 컨테이너에 없으면 기존로직을 호출해서 MemoryMemberRepository를 생성하고 스프링 컨테이너에 등록한다.
 
 > 참고로 AppConfig@CGLIB은 AppConfig의 자식 타입이므로, AppConfig 타입으로 조회 가능하다. (부모타입으로 빈 조회하면 자식 타입 빈들까지 다 조회하니까!)
 
