@@ -1,0 +1,26 @@
+서비스 : 기능!!! 비즈니스 요구사항..!! 
+  - 인터페이스 , 구현체(레파지토리와 연결)
+
+도메인(DB테이블 이름) : ID,이름 이메일 정의 해주고 데이터베이스 접근,데이터 가져오기(GET SET)
+레파지토리 : 
+- 인터페이스 ,구현체 
+
+컨트롤러 :
+
+AppConfig(DI컨테이너) : 객체를 생성하고 이 안에 어떤 인터페이스와 어떤 구현체를 선택할지 직접 연결하는게 아니라
+	    AppConfig에서 연결을 관리함
+
+AppConfig를 통해서 service에 접근하고 구현체 객체가 생성됨
+AppConfig는 생성한 객체 인스턴스의 참조(레퍼런스)를 생성자를 통해서 주입(연결)해준다.
+객체를 생성하고 관리하면서 의존관계 연결해준다.
+
+
+스프링 컨테이너
+ApplicationContext 를 스프링 컨테이너라함
+기존에는 개발자가 AppConfig 를 사용해서 직접 객체를 생성하고 DI를 했지만, 이제부터는 스프링
+컨테이너를 통해서 사용한다.
+ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+이렇게 스프링 컨테이너를 생성함
+스프링 컨테이너도 하나의 자바 객체로 이해하면 됨
+개발자가 직접 new AnnotationConfigApplicationContext를 사용하는 것은 스프링 부트를 사용하는 것이 아닙니다. 
+순수 스프링을 개발자가 직접 사용하는 것입니다. main 메서드에 @SpringBootApplication을 통해서 실행하면 스프링 부트가 자동으로 ApplicationContext를 생성해고 사용하는데, 이것이 스프링 부트를 통해서 스프링을 사용하는 방법

@@ -1,0 +1,15 @@
+테스트
+컨트롤+쉬프트+T
+
+생성자,getset
+alt+insert
+
+appconfig에서 중복제거..? 리팩토링
+컨트롤+alt+m
+
+
+iter + tab
+하면 위에 변수 for문 자동완성
+
+soutv + tab
+system.out.println();
