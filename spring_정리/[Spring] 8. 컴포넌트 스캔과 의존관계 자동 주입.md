@@ -191,7 +191,7 @@ public class MemberServiceImpl implements MemberService {
   - **불변, 필수** 의존관계에 사용!! (항상 그런 것은 아니고 주로 그렇게 사용한다)
 
 **불변**
-개발에서 **불변**은 굉장히 중요! 내가 처음에 값 세팅한 후 더이상의 변경 허용하지 않을 수 있음! (수정자 setter 메서드 안만들어 놓으면 됨, 버그 확률 확 줄어든다.)
+개발에서 **불변**은 굉장히 중요! 내가 처음에 값 세팅한 후 더이상의 변경 허용하지 않을 수 있음! (**수정자 setter 메서드 안만들어 놓으면 됨**, 버그 확률 확 줄어든다.)
 
 **필수**
 필드를 `private final`로 설정해두면 무조건 값이 초기화되어야한다. 언어적으로 이 필드는 무조건 값을 세팅해달라고 잡은 것임.
@@ -228,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
 
 **➕ 자바빈 프로퍼티 규약**
 
-> 자바빈 프로퍼티, 자바에서는 과거부터 필드의 값에 직접 접근하지 않고, setXXX getXXX라는 메서드를 통해서 값을 읽거나 수정하는 규칙을 만들었는데, 그것이 자바빈 프로퍼티 규약!
+> 자바빈 프로퍼티, 자바에서는 과거부터 필드의 값을 변경하거나 가져올 때 직접 접근하지 않고, setXXX getXXX라는 메서드를 통해서 값을 읽거나 수정하는 규칙을 만들었는데, 그것이 자바빈 프로퍼티 규약!
 
 ```java
 @Component
@@ -251,7 +251,7 @@ public class OrderServiceImpl implements OrderService {
 - Setter에 @Autowired 애노테이션 없으면 연관관계 주입되지 않는다.
 - 수정자 주입은 위 코드에서 MemberRepository가 스프링 빈에 등록이 되지 않았을 때도 사용가능하다. ➡ **선택적 의존관계 주입**
 
-> 참고로 `@Autowired`의 기본 동작은 주입할 대상이 없으면 오류가 발생. 주입할 대상이 없어도 동작하게 하려면 `@Autowired(required = false)`로 지정하면 된다.
+> 참고로 `@Autowired`의 기본 동작은 주입할 대상이 없으면 오류가 발생. 주입할 대상이 없어도 동작하게 하려면 `@Autowired(required = false)`로 지정하면 된다. ( 선택적으로 의존관계를 주입할때도 사용, 해당 메서드가 있어도 되고 없어도 될때 사용)
 
 - 스프링 컨테이너는 크게 2가지 라이프사이클이 있다.
   - 스프링 빈 등록
@@ -278,17 +278,44 @@ public class OrderServiceImpl implements OrderService {
 #### 🟨 필드 주입
 
 - 이름 그대로 필드에 바로 주입하는 방법
+
+```java
+@Component
+public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private DiscountPolicy discountPolicy;
+}
+```
+
 - 특징
   - 코드가 간결해서 많은 개발자들을 유혹하지만! **외부에서 변경이 불가능**해서 **테스트하기 힘들다**는 치명적인 단점이 있다!👿
+  - 예를 들어 db접근을 안하고 더미데이터를 넘기는?? 가짜 memberRepository를 만들어서 테스트하고싶다고 할때 쟤를 바꿀 방법이 없음.. 데이터를 넣어서 테스트할라면 set을 또 만들어서 테스트해야함
   - **DI 프레임워크가 없으면 아무것도 할 수 없다.** 😨
   - 따라서 스프링 컨테이너 띄우지 않고 순수한 Java로 하는 단위테스트가 불가능하다!
-  - 사용하지말자!
+  - 사용하지말자❗❗❗ 하지만 아래에서는 사용해도 됨
     - 애플리케이션의 실제코드와 관련 없는 테스트코드
     - 스프링 설정을 목적으로하는 `@Configuration`같은 곳**에서**만 특별한 용도로 사용
 
 #### 🟩 일반 메서드 주입
 
-- 일반 메서드를 통해서 주입받을 수 있다.
+- 생성자가 아니라 일반 메서드를 통해서 주입받을 수 있다.
+
+```java
+@Component
+public class OrderServiceImpl implements OrderService {
+    private MemberRepository memberRepository;
+    private DiscountPolicy discountPolicy;
+    @Autowired
+    public void init(MemberRepository memberRepository, DiscountPolicy
+    discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+}
+```
+
 - 특징
   - 한번에 여러 필드를 주입받을 수 있다.
   - 일반적으로 잘 사용하지 않는다. (생성자 주입이나 수정자 주입안에서 다 해결됨)
@@ -306,7 +333,7 @@ public class OrderServiceImpl implements OrderService {
 - 누군가 실수로 변경할 수도 있고, 변경하면 안되는 메서드를 열어두는 것은 좋은 설계방법이 아니다.
 - 생성자 주입은 객체를 생성할 때 딱 1번만 호출되므로 이후에 호출되는 일이 없다. 따라서 **불변**하게 설계할 수 있다.
 
-#### 🟠 누락
+#### 🟠 누락을 알려줌
 
 프레임워크 없이 순수한 자바 코드를 단위테스트하는 경우 (**굉장히 많음!!**)
 다음과 같이 수정자 의존관계인 경우
@@ -343,19 +370,40 @@ void createOrder() {
 - 위처럼 테스트하면 실행은된다
 - 하지만 실행결과는 NPE(Null Point Exception)이 발생한다.
 - memberRepository, discountPolicy 모두 의존관계 주입이 누락되었기 때문
+  - 가짜 memberRepository라도 만들어서 주입해야한다.
+  - 하지만 테스트를 작성하는 입장에서는 의존관계가 뭐가 들어가있는지 일일히 코드를 까봐야 알 수 있음
 
-생성자 주입을 사용한다면 다음처럼 주입 데이터를 누락했을 때 **컴파일 오류**가 발생한다.
-그리고 IDE에서 바로 어떤 값을 필수로 주입해야 하는지 알 수 있다.
+
+**BUT 생성자 주입**을 사용한다면 다음처럼 주입 데이터를 누락했을 때 **컴파일 오류**가 발생한다.
+그리고 IDE에서 바로 어떤 값을 필수로 주입해야 하는지 알 수 있다. 실행하지 않더라도 코드에서 오류가 발생했음을 미리 알려준다.(컴파일 오류)
 
 ```java
 @Test
 void createOrder() {
-    OrderServiceImpl orderService = new OrderServiceImpl();
+    OrderServiceImpl orderService = new OrderServiceImpl(); //()에 빨간 밑줄 오류발생 그리고 주입해야하는 값 알려줌
     orderService.createOrder(1L, "itemA", 10000);
 }
 ```
 
-#### 🟡 final 키워드
+오류가 발생하지 않으려면
+
+```java
+@Test
+void createOrder() {
+    MemoryMemberRepository memberRepository = new MemoryMemberRepository();
+    memberRepository.save(new Member(1L, "name", Grade.VIP));
+    
+    OrderServiceImpl orderService = new OrderServiceImpl(memberRepository, new FixDiscountPolicy());
+    Order order = orderService.createOrder(1L, "itemA", 10000);
+    assertThat(order.getDiscountPrice()).isEqualTo(1000);
+}
+```
+
+이렇게 순수 자바코드로 하나하나 조립하듯이 필요한 정보를 넣어줘야함
+
+
+
+#### 🟡 final 키워드 사용가능
 
 생성자 주입을 사용하면 필드에 `final`키워드를 사용할 수 있다. 그래서 생성자에 혹시라도 값이 설정되지 않는 오류를 **컴파일 시점**에 막아준다.
 
@@ -376,7 +424,7 @@ public class OrderServiceImpl implements OrderService {
 - 잘 보면 필수 필드인 `discountPolicy`에 값을 설정해야하는데 이부분이 누락되었다.
 - 자바는 컴파일 시점에 다음 오류를 발생시킨다.
 - `java: variable discountPolicy might not have been initialized`
-- 기억하자! **컴파일 오류는 세상에서 가장 빠르고, 좋은 오류다!**
+- 기억하자❗ **컴파일 오류는 세상에서 가장 빠르고, 좋은 오류다!**
 
 > 참고로, 수정자 주입을 포함한 나머지 주입방식은 모두 생성자 이후에 호출되므로, 필드에 final 키워드를 사용할 수 없다!! 오직 생성자 주입에서만 final 키워드를 사용할 수 있다.
 
@@ -385,6 +433,106 @@ public class OrderServiceImpl implements OrderService {
 - 생성자 주입방식을 선택하는 이유는 여러가지가 있지만, 프레임워크에 의존하지 않고 순수한 자바 언어의 특징을 잘 살리는 방법이기도 하다.
 - 기본적으로 생성자 주입을 사용하고, 필수 값이 아닌 경우에는 수정자 주입 방식을 옵션으로 부여하면된다. 생성자 주입과 수정자 주입을 동시에 사용할 수 있다.
 - 항상 생성자 주입을 선택해라! 그리고 가끔 옵션이 필요하면 수정자 주입을 선택해라. 필드 주입은 사용하지 않는게 좋다!
+
+
+
+## 롬복
+
+막상 개발을 해보면, 대부분이 다 불변이고, 그래서 다음과 같이 생성자에 final 키워드를 사용하게 된다. 그런데 생성자도 만들어야 하고, 주입 받은 값을 대입하는 코드도 만들어야 하고…코드가 너무 길다..!!
+필드 주입처럼 좀 편리하게 사용하는 방법은 없을까? 하고 나온게 롬복이라는 라이브러리다.
+
+
+
+```java
+@Component
+public class OrderServiceImpl implements OrderService {
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
+    @Autowired
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy
+    discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+}
+```
+
+- 이제 롬복을 적용해보자. 롬복 라이브러리 적용 방법은 아래에 적어두었다.
+
+- 롬복 라이브러리가 제공하는 @RequiredArgsConstructor 기능을 사용하면 final이 붙은 필드를 모아서 생성자를 자동으로 만들어준다. (다음 코드에는 보이지 않지만 실제 호출 가능하다.)
+
+  
+
+```java
+@Component
+@RequiredArgsConstructor
+public class OrderServiceImpl implements OrderService {
+    private final MemberRepository memberRepository;
+	private final DiscountPolicy discountPolicy;
+}
+```
+
+매우 간단해졌다.!
+
+- @RequiredArgsConstructor 필수값인 final 이 붙은거를 파라미터로 받는 생성자를 만들어줌
+- 최근에 많이 사용함!
+
+
+
+롬복 라이브러리 추가방법
+
+<details>
+<summary>bulid gradle 에 추가</summary>
+	<div markdown="1">
+        plugins {
+        id 'org.springframework.boot' version '2.3.2.RELEASE'
+        id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+        id 'java'
+        }
+        group = 'hello'
+        version = '0.0.1-SNAPSHOT'
+        sourceCompatibility = '11'
+        //lombok 설정 추가 시작
+        configurations {
+            compileOnly {
+                extendsFrom annotationProcessor
+            }
+        }
+        //lombok 설정 추가 끝
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            implementation 'org.springframework.boot:spring-boot-starter'
+        //lombok 라이브러리 추가 시작
+            compileOnly 'org.projectlombok:lombok'
+            annotationProcessor 'org.projectlombok:lombok'
+            testCompileOnly 'org.projectlombok:lombok'
+            testAnnotationProcessor 'org.projectlombok:lombok'
+        //lombok 라이브러리 추가 끝
+            testImplementation('org.springframework.boot:spring-boot-starter-test') {
+                exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            }
+        }
+        test {
+            useJUnitPlatform()
+        }
+    </div>
+</details>
+
+   
+
+또는 start.spring.io에서 dependence에 추가
+
+![image-20211123194349548](C:\Users\hope\AppData\Roaming\Typora\typora-user-images\image-20211123194349548.png)
+
+이것까지 해줘야 사용가능
+
+
+
+
+
+
 
 ### 조회한 빈이 2개이상 - 문제
 

@@ -5,18 +5,21 @@ import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemoryMemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+//@RequiredArgsConstructor //필수값인 final 이 붙은거를 알아서 생성자를 만들어줌
 public class OrderServiceImpl implements OrderService {
 //    private final MemberRepository memberRepository = new MemoryMemberRepository();
 //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
 //    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
+
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy; // 인터페이스에만 의존 (근데 이렇게만하면 NULLPOINTEXCEPTION발생
 
-    @Autowired
+    @Autowired // 롬복사용시 안써도됨
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
