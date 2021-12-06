@@ -1,0 +1,12 @@
+REST 랑 MVC 랑 큰 차이는 없어요.
+세션 vs 토큰
+data-format vs view-resolver
+정도의 차이인데, 이해하기에 비슷한 난이도에요.
+
+차라리 만드신 작품을 실무적으로 확장하시는게 어떨까요.
+지금 있는 back-end api 를 1) container imaging 하시고
+k8s 같은 오케스트레이션으로 2) microservice 화 시키고 그 안에서 redis로 connection data 를 3) sharing 하시면서
+kafka 로 대량 4) messaging 체계 확보해보시면 좋을 것 같아요.
+추가로 api 자체 구현도를 높이기보단 5) cicd 랑 6) test scheduling 으로 구현속도를 향상시키는 작업도 하시면 좋고요. 물론 7) aws 나 gcp 같은 클라우드 서비스에서요.
+
+그게 아니라 api 로직을 향상시키시려면 thread 나 async 로 변형하셔서 병목현상 완화하시면서 과부화 테스팅하시고, 로직이나 미들웨어에서 보완체계 구성해주시면 좋아요. 근데 우려되는게 완성된 하나의 서비스를 만들기보단 구상한 서비스에서 하나의 도메인만 완성도 높게 하시는 걸 추천드려요. 나머지 로직은 더미로 써도, 도메인 하나만 파도 충분할 겁니다.
