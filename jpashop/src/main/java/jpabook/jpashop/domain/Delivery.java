@@ -17,6 +17,7 @@ public class Delivery {
     @Embedded
     private Address address;
 
+    //EnumType.ORDINAL이면 안됨
     @Enumerated(EnumType.STRING) //ENUM을 사용할려면 어노테이션 추가해야함
     private DeliveryStatus status; //ENUM [READY(준비), COMP(배송)]
 }

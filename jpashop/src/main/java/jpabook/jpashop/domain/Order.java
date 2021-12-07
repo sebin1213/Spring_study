@@ -22,7 +22,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY) //1대1일때는 아무나 외래키를 가질수 있지만 자주 엑세스되는곳에 둔다면 효율이 더 좋아질듯..?
     @JoinColumn(name = "delivery_id")
     private Delivery delivery; //배송정보
 
