@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class MemberRepositoryTest {
     @Autowired
-    MemberRepository memberRepository;
+    MemberRepository_before memberRepository;
 
     @Test
     @Transactional // 엔티티매니저를 통한 모든 데이터 변경은 트렌젝션 안에서 이뤄져야함
@@ -20,7 +20,7 @@ public class MemberRepositoryTest {
     public void testMember() throws Exception {
         //given
         Member member = new Member();
-        member.setUsername("1hoon");
+        member.setName("1hoon");
 
         //when
         Long savedId = memberRepository.save(member);
@@ -31,7 +31,7 @@ public class MemberRepositoryTest {
 //        assertEquals(findMember.getUsername(), member.getUsername());
 //        assertEquals(findMember, member);
         assertThat(findMember.getId()).isEqualTo(member.getId());
-        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        assertThat(findMember.getName()).isEqualTo(member.getName());
         assertThat(findMember).isEqualTo(member); //JPA 엔티티 동일성 보장
 
     }
