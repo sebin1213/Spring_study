@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 public class Member {
+
     @Id @GeneratedValue
     @Column(name = "member_id") //pk 이름
     private Long id;
@@ -24,16 +25,6 @@ public class Member {
     @OneToMany(mappedBy = "member") // 매핑..
     private List<Order> orders = new ArrayList<>();
 }
-
-
-
-
-
-
-
-
-
-
 
 //@Entity
 //@Getter @Setter

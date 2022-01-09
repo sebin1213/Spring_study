@@ -31,17 +31,23 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status; //주문상태 [ORDER, CANCEL]
 
-//    //==연관관계 메서드==//
-//    public void setMember(Member member) {
-//        this.member = member;
-//        member.getOrders().add(this);
-//    }
-//    public void addOrderItem(OrderItem orderItem) {
-//        orderItems.add(orderItem);
-//        orderItem.setOrder(this);
-//    }
-//    public void setDelivery(Delivery delivery) {
-//        this.delivery = delivery;
-//        delivery.setOrder(this);
-//    }
+    //==연관관계 편의 메서드==//
+    public void setMember(Member member) { //양방향으로 연결
+        this.member = member;
+        member.getOrders().add(this);  //order와 member를 묶음
+        // 아래 코드를 간단하게 위에 코드로 나타낸거
+//        Member member = new Member();
+//        Order order = new Order();
+//
+//        member.getOrders().add(order);
+//        order.setMember(member);
+    }
+    public void addOrderItem(OrderItem orderItem) { //order랑 orderitem도 양방향
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
 }

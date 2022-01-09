@@ -32,6 +32,6 @@ public class Category {
     //==연관관계 메서드==//
     public void addChildCategory(Category child) {
         this.child.add(child);
-        child.setParent(this);
+        child.setParent(this); //자식에서도 부모가 누군지 알아야함
     }
 }

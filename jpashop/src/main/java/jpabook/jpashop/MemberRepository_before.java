@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-public class MemberRepository {
+public class MemberRepository_before {
     @PersistenceContext //엔티티매니저 (jpa할때 필요)
     EntityManager em;
 
