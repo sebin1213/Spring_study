@@ -25,4 +25,35 @@ public class OrderItem {
     private int orderPrice; //주문 가격
 
     private int count; //주문 수량
+
+    protected OrderItem(){
+        // 누가 외부에서 로직 못건들게 함
+    }
+
+
+    //==생성 메서드==//
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count) { // Item item 필수로 들어가야함... 왜..?
+        // int orderPrice 아이템에 가격이 있는데 이걸 안쓰는 이유는 뭐.. 할인될수도 있으니까?
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(orderPrice);
+        orderItem.setCount(count);
+        item.removeStock(count); // 넘어온 개수만큼 재고를 줄여야함
+        return orderItem;
+    }
+
+
+
+    //==비즈니스 로직 ==//
+    /**
+    * 재고수량 원복
+    **/
+    public void cancel(){ //재고수량 원복
+
+        getItem().addStock(count); // 취소한 개수만큼 다시 더해줌
+    }
+
+    public int getTotalPrice() {
+        return getOrderPrice() * getCount();
+    }
 }

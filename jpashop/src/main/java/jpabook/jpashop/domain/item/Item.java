@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //싱글테이블 전략을 사용
 @DiscriminatorColumn(name = "dtype")
-@Getter // @Setter 이 안에서 수정할꺼라 필요없음
+@Getter @Setter// @Setter 이 안에서 수정할꺼라 필요없음
 public abstract class Item {
 
     @Id
@@ -47,7 +47,4 @@ public abstract class Item {
         }
         this.stockQuantity = restStock;
     }
-
-
-
 }
