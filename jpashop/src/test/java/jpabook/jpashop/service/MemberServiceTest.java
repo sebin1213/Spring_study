@@ -31,6 +31,7 @@ class MemberServiceTest
         //when
         Long joinId = memberService.join(member);
 
+
         //then
         assertEquals(member, memberRepository.findOne(joinId));
     }
