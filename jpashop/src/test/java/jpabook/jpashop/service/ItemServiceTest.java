@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional // 트랜젝션 커밋을 안하고 그냥 롤백함
+@Transactional
 class ItemServiceTest {
 
     @Autowired
