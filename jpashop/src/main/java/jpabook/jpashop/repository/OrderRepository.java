@@ -1,7 +1,7 @@
 package jpabook.jpashop.repository;
 
 
-import com.querydsl.core.types.dsl.BooleanExpression;
+//import com.querydsl.core.types.dsl.BooleanExpression;
 import jpabook.jpashop.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.criteria.internal.predicate.BooleanExpressionPredicate;
