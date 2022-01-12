@@ -41,4 +41,41 @@ public class ItemController {
         return "items/ItemList";
     }
 
+    //상품수정을 누르면 상품수정 폼으로 이동하면서 선택한 아이템의 전체 데이터를 보여줌
+    @GetMapping(value = "/items/{itemId}/edit")
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model
+            model) {
+        Book item = (Book) itemService.findOne(itemId); // 책만 가져온다 가정
+
+        BookForm form = new BookForm();
+
+        form.setId(item.getId());
+        form.setName(item.getName());
+        form.setPrice(item.getPrice());
+        form.setStockQuantity(item.getStockQuantity());
+        form.setAuthor(item.getAuthor());
+        form.setIsbn(item.getIsbn());
+        model.addAttribute("form", form); // 폼에 데이터가 넘어감
+        return "items/updateItemForm";
+    }
+
+
+
+    @PostMapping(value = "/items/{itemId}/edit")
+    public String updateItem(@ModelAttribute("form") BookForm form) {
+
+        Book book = new Book();
+        book.setId(form.getId());
+        book.setName(form.getName());
+        book.setPrice(form.getPrice());
+        book.setStockQuantity(form.getStockQuantity());
+        book.setAuthor(form.getAuthor());
+        book.setIsbn(form.getIsbn());
+
+        itemService.saveItem(book);
+        return "redirect:/items";
+    }
+
+
+
 }
