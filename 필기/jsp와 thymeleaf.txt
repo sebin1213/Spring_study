@@ -1,4 +1,0 @@
-왜 jsp를 안쓰고 thymeleaf를 사용할까?
-
-natural templates 마크업을 망가트리지 않고..if 잘 안씀..?
-jsp는 안열림 근데 얘는 웹브라우저애서 열림 물론 단점도 있음
