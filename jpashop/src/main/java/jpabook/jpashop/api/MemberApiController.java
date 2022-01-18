@@ -59,4 +59,31 @@ public class MemberApiController {
             this.id = id;
         }
     }
+
+
+
+
+    /**
+     * 수정 API
+     */
+    @PutMapping("/api/v2/members/{id}")
+    public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id,
+                                               @RequestBody @Valid UpdateMemberRequest request) {
+        memberService.update(id, request.getName());
+        Member findMember = memberService.findOne(id);
+        return new UpdateMemberResponse(findMember.getId(), findMember.getName(),findMember.getAddress());
+    }
+    @Data
+    static class UpdateMemberRequest {
+        private String name;
+    }
+    @Data
+    @AllArgsConstructor //롬복에서 제공하는 어노테이션 DTO에는 좀 어노테이션 막씀..?
+    static class UpdateMemberResponse {
+        private Long id;
+        private String name;
+        private Address address;
+    }
+
+
 }

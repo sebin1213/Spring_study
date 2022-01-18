@@ -48,6 +48,15 @@ public class MemberService {
         }
     }
 
+    /**
+     * 회원 수정
+     */
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+    }
+
 
     //회원 전체 조회
 //    @Transactional(readOnly = true) jpa에서 조회할때만 이걸 사용하면 좀더 최적화한 상태로 조회할수 있음
