@@ -1,5 +1,6 @@
 package jpabook.jpashop.api;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,10 @@ public class MemberApiController {
     @PostMapping("/api/v2/members")
     public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
         Member member = new Member();
+        Address address = new Address(request.getAddress().getCity(),request.getAddress().getStreet(),request.getAddress().getZipcode());
+
         member.setName(request.getName());
+        member.setAddress(address);
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
     }
@@ -45,6 +49,8 @@ public class MemberApiController {
     @Data
     static class CreateMemberRequest {
         private String name;
+        private Address address;
+
     }
     @Data
     static class CreateMemberResponse {
