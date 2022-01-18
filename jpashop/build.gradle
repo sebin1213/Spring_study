@@ -30,6 +30,8 @@ dependencies {
 
 	implementation 'com.querydsl:querydsl-jpa' //querydsl 추가
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5' // Hibernate5Module 등록
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
