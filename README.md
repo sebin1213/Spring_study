@@ -10,7 +10,7 @@
 
 ## 📚정리노트
 
-- [ [Spring] 1. 스프링이란 ](https://github.com/sebin1213/Spring_study/blob/main/spring_정리/[Spring]-1.-스프링이란.md)
+- [ [Spring] 1. 스프링이란 ](https://github.com/sebin1213/Spring_study/blob/main/spring_정리/[Spring] 1. 스프링이란.md)
 - [Spring] 2. 좋은 객체지향 프로그래밍이란
 - [Spring] 3. 좋은 객체지향 설계의 5가지 원칙 (SOLID)
 - [Spring] 4. 객체지향 설계와 스프링
