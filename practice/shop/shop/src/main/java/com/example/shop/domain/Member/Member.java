@@ -26,18 +26,18 @@ public class Member {
     @JsonIgnore
     private String password;
 
-    @Column(unique = true, length = 50)
+    @Column(length = 50)
     private String username;
 
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true)
-    private String phone;
+//    @Column(unique = true)
+//    private String phone;
 
     private String point;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
     @Embedded
@@ -51,6 +51,6 @@ public class Member {
     private AuthorityStatus authority;
 
     @JsonIgnore
-    private String verify;
+    private VerifyStatus verify;
 
 }

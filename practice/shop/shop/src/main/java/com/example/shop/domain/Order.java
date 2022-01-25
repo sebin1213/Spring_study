@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders") // order는 데이터베이스 order by의 예약어로 잡고있어서 orders로 변경해줌
+@Table(name = "orders")
 @Getter @Setter
 public class Order {
 
@@ -25,7 +25,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -41,14 +41,6 @@ public class Order {
     public void setMember(Member member) { //양방향으로 연결
         this.member = member;
         member.getOrders().add(this);  //order와 member를 묶음
-    }
-    public void addOrderItem(OrderItem orderItem) { //order랑 orderitem도 양방향
-        orderItems.add(orderItem);
-        orderItem.setOrder(this);
-    }
-    public void setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        delivery.setOrder(this);
     }
 
 }
