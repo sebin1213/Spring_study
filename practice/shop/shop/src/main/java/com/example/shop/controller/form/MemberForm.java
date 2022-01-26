@@ -15,11 +15,11 @@ import javax.validation.constraints.Size;
 @Getter @Setter
 public class MemberForm {
 
-    @NotBlank(message = "아이디는 필수 입니다")
+    @NotBlank
     @Size(min = 8, message = "아이디는 8자 이상이여야 합니다!")
     private String userid;
 
-    @NotBlank(message = "비밀번호는 필수 입니다")
+    @NotBlank
     @Size(min = 10, message = "비밀번호는 10자 이상이여야 합니다!")
     private String password;
 
