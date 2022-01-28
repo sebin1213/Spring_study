@@ -65,3 +65,4 @@ java , springboot, jpa, Lombok, H2 Database, Thymeleaf
 
 설계
 
+![image-20220129034108796](C:\Users\1213h\AppData\Roaming\Typora\typora-user-images\image-20220129034108796.png)
