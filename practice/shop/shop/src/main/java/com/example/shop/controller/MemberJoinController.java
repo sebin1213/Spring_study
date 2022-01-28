@@ -20,13 +20,13 @@ public class MemberJoinController {
     public final MemberService memberService;
 
 
-    @GetMapping(value = "/member/new")
+    @GetMapping(value = "/members/new")
     public String createMemberForm(Model model){
         model.addAttribute("memberForm", new MemberForm());
         return "members/createMemberForm";
     }
 
-    @PostMapping(value = "/member/new")
+    @PostMapping(value = "/members/new")
     public String createMemberPost(@Valid MemberForm form, BindingResult result) { //BindingResult result 오류가 발생할시 아래 실행
         if (result.hasErrors()) {
             return "members/createMemberForm";
