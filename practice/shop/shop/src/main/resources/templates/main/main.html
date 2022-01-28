@@ -1,10 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div id="slide" style="height: 500px;">
+  <div id="myCarousel" class="carousel slide" data-ride="carousel" style="height: 100%;">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" style="height: 100%;">
+      <div class="item active" style="height: 100%;">
+        <img src="https://img.huffingtonpost.com/asset/600e42a02500000c0fe23843.jpeg?ops=scalefit_720_noupscale&format=webp" alt="Los Angeles" style="width:100%;">
+      </div>
+
+      <div class="item" style="height: 100%;">
+        <img src="https://img.huffingtonpost.com/asset/600e45a4260000070bacf97d.jpeg?ops=scalefit_720_noupscale&format=webp" alt="Chicago" style="width:100%;">
+      </div>
+
+      <div class="item" style="height: 100%;">
+        <img src="https://img.huffingtonpost.com/asset/600e45a4260000070bacf97d.jpeg?ops=scalefit_720_noupscale&format=webp" alt="New york" style="width:100%;">
+      </div>
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+
+
 </body>
 </html>
