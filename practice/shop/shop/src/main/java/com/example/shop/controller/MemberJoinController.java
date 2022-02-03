@@ -37,6 +37,6 @@ public class MemberJoinController {
         member.setUsername(form.getUsername());
         member.setEmail(form.getEmail());
         memberService.join(member);
-        return "redirect:/"; // 첫번째 페이지로 넘어감
+        return "redirect:/main"; // 첫번째 페이지로 넘어감
     }
 }
