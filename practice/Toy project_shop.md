@@ -20,6 +20,7 @@ java , springboot, jpa, Lombok, H2 Database, Thymeleaf
     - 자격 : 일반회원, 정지회원, 관리자
   - Item : 상품ID, 상품 구분, 재고수량, 대표이미지
     - 아우터 : 기장, 사이즈, 재질, 종류      상의: 사이즈, 재질, 종류      하의 : 기장, 사이즈, 재질, 종류       악세서리 : 재질
+  - OrderItem : 상품의 개수, 총 금액
   - Order : 주문 상품(여러개), 주문 시간, 주문 개수 ,주문회원, 금액, 주문 상태,**Delivery**, **Review**
   - Delivery : 아이디, 주소 , 배송상태
   - Review : 주문상품, 별점, 내용
