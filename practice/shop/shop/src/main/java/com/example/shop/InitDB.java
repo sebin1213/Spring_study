@@ -27,11 +27,11 @@ public class InitDB {
     static class InitService {
         private final EntityManager em;
         public void dbInit1() {
-            Member member = createMember("1213hhh", "1122pas", "sebin", "1213hop@mansld.dod");
+            Member member = createMember("userid_1", "userpass_2", "username_1", "user_1@email");
             em.persist(member);
         }
         public void dbInit2() {
-            Member member = createMember("aasdasahh", "222", "sebi222n", "adasda@dd");
+            Member member = createMember("userid_2", "userpass_1", "username_2", "user_2@email");
             em.persist(member);
         }
         private Member createMember(String userid, String password, String username,
