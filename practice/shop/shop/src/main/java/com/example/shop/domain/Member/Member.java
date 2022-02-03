@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,8 +34,7 @@ public class Member {
     private String email;
 
 //    @Column(unique = true)
-//    private String phone;
-
+    private String phone;
     private String point;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

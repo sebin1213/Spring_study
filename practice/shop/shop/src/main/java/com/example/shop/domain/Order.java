@@ -35,8 +35,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus Status;
 
-
-
     //==연관관계 편의 메서드==//
     public void setMember(Member member) { //양방향으로 연결
         this.member = member;
