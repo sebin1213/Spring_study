@@ -2,6 +2,8 @@ package jpabook.jpashop.api;
 
 import jpabook.jpashop.domain.*;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -146,6 +148,33 @@ public class OrderApiController {
                 .map(o -> new OrderDto(o))
                 .collect(toList());
         return result;
+    }
+
+/***
+ * v4
+ * - dto 직접조회
+ * n+1 문제
+ * **/
+    private final OrderQueryRepository orderQueryRepository;
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
+    /***
+     * v5
+     * - dto 직접조회
+     * 이전의 단점인 루프를 도는 과정을 없애고 한번에 가져옴
+     * Query: 루트 1번, 컬렉션 1번
+     * ToOne 관계들을 먼저 조회하고, 여기서 얻은 식별자 orderId로 ToMany 관계인 OrderItem 을
+     * 한꺼번에 조회
+     * MAP을 사용해서 매칭 성능 향상(O(1))
+     * **/
+
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
     }
 
 
