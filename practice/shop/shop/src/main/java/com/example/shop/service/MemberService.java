@@ -1,6 +1,7 @@
 package com.example.shop.service;
 
 import com.example.shop.domain.Member.Member;
+import com.example.shop.repository.EmailAuthRepository;
 import com.example.shop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final EmailAuthRepository emailAuthRepository;
 
     public Long join(Member member){
 //        validateDuplicateMember(member); // 중복 아이디,이메일 검증
+        emailAuthRepository.save(emailAuth);
         memberRepository.save(member);
         return member.getId();
     }
