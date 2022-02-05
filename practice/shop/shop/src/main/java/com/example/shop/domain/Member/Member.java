@@ -14,10 +14,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import static com.example.shop.domain.Member.AuthorityStatus.USER;
 
 @Entity
-@DynamicInsert //하이버네이트는 insert나 update 시 모든 컬럼을 사용하지만 default값을 넣어주기 위해 null인 필드를 제외하는 어노테이션을 추가한다.
-@DynamicUpdate //update 시 null 인필드 제외
+//@DynamicInsert //하이버네이트는 insert나 update 시 모든 컬럼을 사용하지만 default값을 넣어주기 위해 null인 필드를 제외하는 어노테이션을 추가한다.
+//@DynamicUpdate //update 시 null 인필드 제외
 @Getter @Setter
 @JsonIgnoreProperties(value={"password"})
 public class Member {
@@ -40,8 +41,7 @@ public class Member {
 //    @Column(unique = true)
     private String phone;
 
-    @ColumnDefault("0")
-    private String point;
+    private int point = 0;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
@@ -54,9 +54,11 @@ public class Member {
     private DeliveryStatus status; //ENUM [READY(준비), COMP(배송)]
 
     @JsonIgnore
-    private AuthorityStatus authority;
+    private AuthorityStatus authority = USER;
 
-    @JsonIgnore
-    private VerifyStatus verify;
+
+    private String refreshToken;
+
+    private Boolean emailAuth;
 
 }
