@@ -55,4 +55,10 @@ class MemberServiceTest
         IllegalStateException thrown = assertThrows(IllegalStateException.class, () -> memberService.join(memberB));
         assertEquals("이미 존재하는 회원입니다.", thrown.getMessage());
     }
+
+    @Test
+    void 트랜젝션이_언제까지살아있는가() throws Exception{
+        Member m = memberService.findOne(1L);
+        memberService.findMembers();
+    }
 }
