@@ -3,7 +3,7 @@ package jpabook.jpashop.service;
 import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
-import jpabook.jpashop.repository.MemberRepository;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import jpabook.jpashop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderService {  // 로직 자체는 정적 팩토리 메소드로 작성했지만 접근할려면 서비스에서 접근
 
     private final OrderRepository orderRepository;
-    private final MemberRepository memberRepository;
+    private final MemberRepositoryOld memberRepository;
     private final ItemRepository itemRepository;
 
     /**

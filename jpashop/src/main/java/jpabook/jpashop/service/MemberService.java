@@ -1,10 +1,8 @@
 package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.repository.MemberRepository;
-import lombok.AllArgsConstructor;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor // final 있는 필드만 가지고 생성자 만들어줌
 public class MemberService {
 
-    private final MemberRepository memberRepository;  // final 붙이면 아래에 생성자 값 안만ㄷ르면 빨간줄뜨면서 체크할수있음
+    private final MemberRepositoryOld memberRepository;  // final 붙이면 아래에 생성자 값 안만ㄷ르면 빨간줄뜨면서 체크할수있음
 
 //    @Autowired // 없어도 됨 최근 스프링에서 지원해줌
 //    public MemberService(MemberRepository memberRepository){
