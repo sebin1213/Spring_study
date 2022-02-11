@@ -6,6 +6,7 @@ import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderItemQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
+import jpabook.jpashop.service.query.OrderQueryService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -126,14 +127,23 @@ public class OrderApiController {
      * 데이터를 DB에서 읽어오고, 메모리에서 페이징 해버린다(매우 위험하다).
      */
 
+
+    /********************************************************************************************************* OSIV 실습하면서 비즈니스 로직의 위치들을 변경함*****************************************************/
+    private final OrderQueryService orderQueryService;
     @GetMapping("/api/v3/orders")
-    public List<OrderDto> ordersV3() {
-        List<Order> orders = orderRepository.findAllWithItem();
-        List<OrderDto> result = orders.stream()
-                .map(o -> new OrderDto(o))
-                .collect(toList());
-        return result;
+    public List<jpabook.jpashop.service.query.OrderDto> ordersV3() {
+        return orderQueryService.ordersV3();
     }
+
+
+//    @GetMapping("/api/v3/orders")
+//    public List<OrderDto> ordersV3() {
+//        List<Order> orders = orderRepository.findAllWithItem();
+//        List<OrderDto> result = orders.stream()
+//                .map(o -> new OrderDto(o))
+//                .collect(toList());
+//        return result;
+//    }
 
     /**
      * V3.1 엔티티를 조회해서 DTO로 변환 페이징 고려
