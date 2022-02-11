@@ -3,6 +3,7 @@ package jpabook.jpashop.repository;
 
 //import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.criteria.internal.predicate.BooleanExpressionPredicate;
@@ -102,30 +103,32 @@ public class OrderRepository {
     }
 
 
-//    public List<Order> findAll(OrderSearch orderSearch){
-//        QOrder order = QOrder.order;
-//        QMember member = QMember.member;
-//
-//        return query
-//                .select(order)
-//                .from(order)
-//                .join(order.member, member)
-//                .where(statusEq(orderSearch.getOrderStatus()),
-//                        nameLike(orderSearch.getMemberName()))
-//                .limit(1000)
-//                .fetch();
-//    }
-//    private BooleanExpression statusEq(OrderStatus statusCond){
-//        if(statusCond == null){
-//            return null;
-//        }
-//        return order.status.eq(statusCond);
-//    }
-//    private BooleanExpression nameLike(String nameCond){
-//        if (!StringUtils.hasText(nameCond)){
-//            return null;
-//        }
-//        return member.name.like(nameCond)
-//    }
+    public List<Order> findAll(OrderSearch orderSearch){
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+
+        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        return query
+                .select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()),
+                        nameLike(orderSearch.getMemberName()))
+                .limit(1000)
+                .fetch();
+    }
+    private BooleanExpression statusEq(OrderStatus statusCond){
+        if(statusCond == null){
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
+    private BooleanExpression nameLike(String nameCond){
+        if (!StringUtils.hasText(nameCond)){
+            return null;
+        }
+        return QMember.member.name.like(nameCond);
+    }
 
 }
