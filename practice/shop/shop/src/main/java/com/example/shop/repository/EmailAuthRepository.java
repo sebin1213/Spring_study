@@ -13,18 +13,18 @@ import java.util.Optional;
 public class EmailAuthRepository {
 
     private final EntityManager em;
-
-    public EmailAuth save(EmailAuth emailAuth){
-
-        emailAuth.setExpireDate(LocalDateTime.now().plusMinutes(5L));
-
-        em.persist(emailAuth);
-        return emailAuth;
-    }
-
-    public Optional<EmailAuth> findAuthByEmail(String email, String authToken, LocalDateTime currentTime) {
-        EmailAuth emailAuth = em.find(EmailAuth.class, email);
-        return Optional.ofNullable(emailAuth);
-    }
+//
+//    public EmailAuth save(EmailAuth emailAuth){
+//
+//        emailAuth.setExpireDate(LocalDateTime.now().plusMinutes(5L));
+//
+//        em.persist(emailAuth);
+//        return emailAuth;
+//    }
+//
+//    public Optional<EmailAuth> findAuthByEmail(String email, String authToken, LocalDateTime currentTime) {
+//        EmailAuth emailAuth = em.find(EmailAuth.class, email);
+//        return Optional.ofNullable(emailAuth);
+//    }
 
 }
