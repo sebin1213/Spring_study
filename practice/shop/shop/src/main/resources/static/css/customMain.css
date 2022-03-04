@@ -1,0 +1,16 @@
+#slide{
+height :768px;
+}
+.menu{
+    display: inline-block;
+    position: relative;
+        float: left;
+            width: 20%;
+            text-align: center;
+}
+
+.menu a{
+position: relative;
+    display: block;
+    padding: 10px 15px;
+}
