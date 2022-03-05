@@ -131,7 +131,7 @@ class MemberRepositoryTest {
         Member m2 = new Member("AAA", 20);
         memberRepository.save(m1);
         memberRepository.save(m2);
-
+//        Member aaa = memberRepository.findMemberByUsername("AAA"); //스프링 데이터 JPA 는 값없어도 NULL 반환 그냥 JPA는 NoResultException
 //        Member aaa = memberRepository.findMemberByUsername("AAA"); //현재는 에러남 2개이상의 데이터를 넣었는데 하나만 출력하라고 해서..
         List<Member> bbb = memberRepository.findListByUsername("AAAff");
 //        System.out.println("size???" + bbb.size()); // 사이즈가 0으로 나옴 존재하지 않아도 null로 반환함 이제는 그냥 optional로 사용함
