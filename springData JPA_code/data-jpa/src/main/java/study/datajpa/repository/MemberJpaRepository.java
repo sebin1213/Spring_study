@@ -45,11 +45,11 @@ public class MemberJpaRepository { //update는 따로 필요없음 (변경감지
     public List<Member> findByPage(int age, int offset, int limit) {
         return em.createQuery("select m from Member m where m.age = :age order by m.username desc")
                         .setParameter("age", age)
-                        .setFirstResult(offset)
-                        .setMaxResults(limit)
+                        .setFirstResult(offset)//어디서부터 가져올껀지
+                        .setMaxResults(limit)// 개수 몇개
                         .getResultList();
     }
-    public long totalCount(int age) {
+    public long totalCount(int age) { // 전체 개수 가져오기
         return em.createQuery("select count(m) from Member m where m.age = :age",
                         Long.class)
                 .setParameter("age", age)
