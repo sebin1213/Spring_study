@@ -14,6 +14,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +28,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void testMember() {
@@ -205,5 +209,133 @@ class MemberRepositoryTest {
         Assertions.assertThat(slice_page.getNumber()).isEqualTo(0); // 현재 몇번째 페이지인지 알아서 제공해줌
         Assertions.assertThat(slice_page.isFirst()).isTrue();// 첫번째 페이지인가?
         Assertions.assertThat(slice_page.hasNext()).isTrue(); // 다음 페이지가 존재하는가?
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void bulkUpdate() throws Exception {
+//given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+        /**
+         * 위에 member들 보면 저장할때는 영속성 컨텍스트에 들어감 아직 트렌젝션이 끝나지 않았기 때문에 플러시가 일어나지않고 한마디로 db에 반영되지 않은 상태임
+         * 어케 수정됨..? 아래 연산(bulkAgePlus)은 db에서 반영이 될텐데
+         * 실제로 여기 테스트코드안에서 회원의 나이를 출력하면 영속성컨텍스트에서 변경되지 않았기 때문에 수정되지 않은 나이가 출력됨
+         * 조심해야함...!!!!! 벌크연산 이후에는 영속성 컨텍스트 모두 날려야함
+         * **/
+//when
+        int resultCount = memberRepository.bulkAgePlus(20);
+
+//        em.flush(); // jpal을 실행할때 플러시를 진행함 근데 jpal과 관련이 있는 애들만 플러시하기때문에 나머지애들 플러시해주고 초기화
+//        em.clear();
+
+//then
+        Assertions.assertThat(resultCount).isEqualTo(3);
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void bulkUpdate_플러시커밋_시점_테스트() throws Exception {
+//given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        List<Member> member = memberRepository.findUser("member3",20);
+
+        member.get(0).changeAge(19);
+        /**
+         * JPQL쿼리 실행시 쿼리 실행 전에 플러시, 커밋이 일어남
+         * **/
+//when
+        int resultCount = memberRepository.bulkAgePlus(20);
+//then
+        Assertions.assertThat(resultCount).isEqualTo(2);
+    }
+
+    @Test
+    public void findMemberLazy(){
+        //given
+//member1 -> teamA member1이 teamA 참조
+//member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        memberRepository.save(new Member("member1", 10, teamA));
+        memberRepository.save(new Member("member2", 20, teamB));
+        em.flush();
+        em.clear();
+////when
+//        List<Member> members = memberRepository.findAll();
+////then
+//        for (Member member : members) {
+//            // member를 불러올때 team을 지연로딩으로 해놓음 그러면 다른 애들을 가져올때 team을 null로 둘수도 없고...
+//            System.out.println("member : "+ member.getTeam());
+//            //lazy 관계이기 때문에 team이 없음 가짜 프록시 객체만 존재
+//            System.out.println("member.class : "+ member.getTeam().getClass());
+//            // 근데 여기서는 팀을 부를꺼아녀 이 팀을 부를때 이거를 사용할때는
+//            System.out.println("member : "+ member.getTeam().getName());
+//            //
+
+
+        //when
+
+        List<Member> members = memberRepository.findMemberFetchJoin();
+//then
+        for (Member member : members) {
+            // member를 불러올때 team을 지연로딩으로 해놓음 그러면 다른 애들을 가져올때 team을 null로 둘수도 없고...
+            System.out.println("member : "+ member.getTeam());
+            //lazy 관계이기 때문에 team이 없음 가짜 프록시 객체만 존재
+            System.out.println("member.class : "+ member.getTeam().getClass());
+            // 근데 여기서는 팀을 부를꺼아녀 이 팀을 부를때 이거를 사용할때는
+            System.out.println("member : "+ member.getTeam().getName());
+            //
+
+        }
+    }
+
+
+    @Test
+    public void queryHint() throws Exception {
+//given
+        //내가 jpal을 날렸는데
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+//when
+
+        Member findmember = memberRepository.findById(member1.getId()).get();
+        findmember.changeUserName("member2");
+        em.flush();
+
+        // 평범해보이는 변경감지...
+        // 이기능에는 치명적인 단점이 존재함
+        // 원본을 알고있어야함.. 객체를 2개관리
+        // 원본데이터를 알아야 얘가 변경이 된건지 알수있음 한마디로ㅓ 메모리를 더 많이 먹음
+        // 만약에 데이터를 변경하지 않고 데이터조회만 할꺼면
+        // 원본데이터가 필요없음 하지만 Member findmember = memberRepository.findById(member1.getId()) 이거는
+        // 원본데이터와 원본을 복사해서 만들어두는 객체(스냅샷)를 들고옴....
+        // 만약 무조건 100% 조회용으로 사용할꺼면 하이버네이트의 기능인 힌트를 사용
+
+        Member member = memberRepository.findReadOnlyByUsername("member1");
+        member.changeUserName("member2");
+        em.flush(); //Update Query 실행X
+        
+        // 위를 사용하게되면 readOnly로 데이터를 가져와서 스냅샷을 만들지 않음
+        // 데이터를 변경했어도 비교한 원본데이터 없어서 비교불가 update 안함
+        // 하지만 조회용으로 사용할꺼라 모두 read only를 사용해도 사실 별로 최적화 안됨 ( 이거때문에 성능느려지는경우는 별로없음...)
+        
+    }
+
+    @Test
+    public void callCustom(){
+        List<Member> result = memberRepository.findMemberCustom();
     }
 }
