@@ -41,4 +41,7 @@ public class Member {
     public void changeUserName(String username) {
         this.username = username;
     }
+    public void changeAge(int age) {
+        this.age = age;
+    }
 }
