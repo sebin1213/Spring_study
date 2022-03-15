@@ -34,7 +34,7 @@ public class OrderItem {
 
 
     //==생성 메서드==//
-    public static OrderItem createOrderItem(Item item, int orderPrice, int count) { // Item item 필수로 들어가야함... 왜..?
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
         // int orderPrice 아이템에 가격이 있는데 이걸 안쓰는 이유는 뭐.. 할인될수도 있으니까?
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
