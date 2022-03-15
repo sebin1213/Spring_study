@@ -24,4 +24,5 @@ public class JpaBaseEntity {
     public void preUpdate() {
         updatedDate = LocalDateTime.now();
     }
+    public class Member extends JpaBaseEntity {}
 }
