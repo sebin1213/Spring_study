@@ -1,5 +1,6 @@
 package com.example.shop.service;
 
+import com.example.shop.domain.Member.EmailAuth;
 import com.example.shop.domain.Member.Member;
 import com.example.shop.repository.EmailAuthRepository;
 import com.example.shop.repository.MemberRepository;
@@ -19,7 +20,7 @@ public class MemberService {
 
     public Long join(Member member){
 //        validateDuplicateMember(member); // 중복 아이디,이메일 검증
-        emailAuthRepository.save(emailAuth);
+//        emailAuthRepository.save(emailAuth);
         memberRepository.save(member);
         return member.getId();
     }
