@@ -5,10 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)  //protected Member(){}
 @ToString(of = {"id","username","age"}) //team을 넣게 되면 연관관계 타고들어가서 무한출력
-public class Member {
+public class Member extends JpaBaseEntity {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
@@ -44,4 +44,6 @@ public class Member {
     public void changeAge(int age) {
         this.age = age;
     }
+
+
 }
