@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class) // 이벤트로 동작한다....????
 @MappedSuperclass
 @Getter
-public class BaseEntity {
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
-    @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+public class BaseEntity extends BaseTimeEntity {
+//    @CreatedDate
+//    @Column(updatable = false)
+//    private LocalDateTime createdDate;
+//    @LastModifiedDate
+//    private LocalDateTime lastModifiedDate;
 
     // 시간이라는건 현재 시간을 넣으면 되는데 등록자라는건 어디에서 가져와서 등록을 할까....??
     //jpa애플리케이션에서 확인
