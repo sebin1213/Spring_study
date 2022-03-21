@@ -10,10 +10,18 @@ import study.datajpa.repository.MemberRepository;
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
+//    private final MemberRepository memberRepository;
+//    @GetMapping("/members/{id}")
+//    public String findMember(@PathVariable("id") Long id) {
+//        Member member = memberRepository.findById(id).get();
+//        return member.getUsername();
+//    }
+
     private final MemberRepository memberRepository;
     @GetMapping("/members/{id}")
-    public String findMember(@PathVariable("id") Long id) {
-        Member member = memberRepository.findById(id).get();
+    public String findMember(@PathVariable("id") Member member) {
         return member.getUsername();
     }
+
+
 }
