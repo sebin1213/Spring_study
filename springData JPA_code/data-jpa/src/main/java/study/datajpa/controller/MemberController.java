@@ -47,7 +47,7 @@ public class MemberController {
     }
 
 
-    @PostConstruct
+//    @PostConstruct
     public void init(){
         for (int i=0;i<100;i++){
             memberRepository.save(new Member("USER"+i,i));
