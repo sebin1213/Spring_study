@@ -8,6 +8,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
+//jpa 이벤트로 해결하는 법
 @MappedSuperclass // 상속관계가 아니라 속성만 내려쓰는 관계 (데이터만 공유하는것... jpa상속관계 아님)
 @Getter
 public class JpaBaseEntity {
