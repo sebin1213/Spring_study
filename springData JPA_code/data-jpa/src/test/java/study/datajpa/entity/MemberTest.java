@@ -16,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MemberTest {
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     MemberRepository memberRepository;
 
-    @PersistenceContext
-    EntityManager em;
     @Test
     @Transactional
     @Rollback(false)
@@ -51,6 +52,7 @@ public class MemberTest {
     }
 
     @Test
+    @Transactional
     public void JpaEventBaseEntity() throws Exception {
 //given
         Member member = new Member("member1");
@@ -69,13 +71,10 @@ public class MemberTest {
 //                findMember.getUpdatedDate());
         System.out.println("findMember.updatedDate = " +
                 findMember.getLastModifiedDate());
-        System.out.println("findMember.CreatedBy = " +
-                findMember.getCreatedBy());
-        System.out.println("findMember.LastModifiedBy = " +
-                findMember.getLastModifiedBy());
+//        System.out.println("findMember.CreatedBy = " +
+//                findMember.getCreatedBy());
+//        System.out.println("findMember.LastModifiedBy = " +
+//                findMember.getLastModifiedBy());
     }
-
-
-
 
 }
