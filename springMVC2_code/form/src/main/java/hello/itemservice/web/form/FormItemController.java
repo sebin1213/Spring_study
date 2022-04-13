@@ -64,7 +64,7 @@ public class FormItemController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new Item());
+        model.addAttribute("item", new Item()); //커맨드객체 넘김
         return "form/addForm";
     }
 
