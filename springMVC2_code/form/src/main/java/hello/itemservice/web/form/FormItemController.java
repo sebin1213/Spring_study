@@ -71,7 +71,10 @@ public class FormItemController {
     @PostMapping("/add")
     public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes) {
 
-        log.info("item.open={}", item.getOpen());
+        log.info("item.open={}", item.getOpen()); // 체크박스 체크하고 넘길시 true가 반환된다 하지만 html form값을 보면 open = on 이라는 값이 넘어온다(이 on을 스프링에서 true로 변환해준다.
+        // 하지만!!!! 체크박스를 선택하지 않고 넘기면 open이라는 필드 자체가 생성되지 않는다 한마디로 그냥 null 이라는 말..!
+        // 때문에 스프링mvc는 체크를하던 안하던 무조건 전송되는 _open이라는 이름의 히든필드를 하나만들어서 _open 값만 전송됬을때 체크를 해제했다고 인식한다.
+        // 하지만!!!!!!!! 타임리프 사용하면 걱정 없다! 알아서 해결해줌
         log.info("item.regions={}", item.getRegions());
         log.info("item.itemType={}", item.getItemType());
 
