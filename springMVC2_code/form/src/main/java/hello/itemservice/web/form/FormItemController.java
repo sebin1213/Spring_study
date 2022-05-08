@@ -24,6 +24,10 @@ public class FormItemController {
 
     private final ItemRepository itemRepository;
 
+//    등록폼, 상세폼 수정 폼 모두 서울 부산 제주라는 체크박스를 반복해서 보여줘야합니다.
+//    이렇게 할려면 각각의 컨트롤러에서 model.attribute를 사용해 체크박스를 구성하는 데이터를 넣어줘야합니다.
+//    @ModelAttribute은 이렇게 컨트롤러에 있는 별도의 메서드에 적용할수 있습니다.
+//    ("regions")에서 반환된 값이 자동으로 모델에 담기게 됩니다.(물론 각각의 컨트롤러에서 모델에 데이터를 담아 처리해도 됩니다.)
     @ModelAttribute("regions")
     public Map<String, String> regions() {
         Map<String, String> regions = new LinkedHashMap<>();
