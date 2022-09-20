@@ -63,6 +63,7 @@ public class HomeController {
 //    @GetMapping("/")
     public String homeLoginV3(HttpServletRequest request, Model model) {
 
+        // 처음페이지에 들어왔을때 세션이 생기면 안됨 때문에 false값을 넘겨서 세션을 찾고 반환하는 동작만 실행한다.
         HttpSession session = request.getSession(false);
         if (session == null) {
             return "home";
@@ -83,7 +84,7 @@ public class HomeController {
 //    @GetMapping("/")
     public String homeLoginV3Spring(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, Model model) {
-
+        /** @SessionAttribute 으로 세션을 뒤져서 Member loginMember 여기에 넣어준다.  **/
         //세션에 회원 데이터가 없으면 home
         if (loginMember == null) {
             return "home";
