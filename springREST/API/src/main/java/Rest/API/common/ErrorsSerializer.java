@@ -16,7 +16,7 @@ import java.io.IOException;
  *
  * **/
 
-@JsonComponent // 이렇게 등록을 한다면 objectMapper는 이거를 사용해서 Errors를 json으로 시리얼라이징할때 이거를 사용함
+@JsonComponent // objectMapper에 시리얼라이저 등록, 이렇게 등록을 한다면 objectMapper는 이거를 사용해서 Errors를 json으로 시리얼라이징할때 이거를 사용함
 public class ErrorsSerializer extends JsonSerializer<Errors> { // JsonSerializer<Errors> Errors타입을 변환하는 json 시리얼라이저
 
     @Override
