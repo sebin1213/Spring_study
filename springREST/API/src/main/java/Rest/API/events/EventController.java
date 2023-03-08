@@ -57,31 +57,20 @@ public class EventController {
             System.out.println("error............");
             // return ResponseEntity.badRequest().body(errors);
             // 에러메세지를 전송하기위해 body에 error메세지를 담아 보내자..!
-            // 하지만 불가능함... body에 담으면 error객체를 json으로 변경할수 없어서 불가능
-            // 왜?? 이벤트객체는 자바 bean스펙에 준수한 객체이기 때문에 objectmapper는 이 객체를 json형태로 기본 시리얼라이저인 bean시리얼라이저를 사용해 변환한다.
-            // 하지만 errors는 자바 bean스펙에 준수한 객체가 아님... 때문에 objectmapper를 이용해 json형태로 변경하고싶어도 bean시리얼라이저를 사용할때 에러가 발생해 변환할 수 없다.
+            // 하지만 불가능함... body에 담으면 error객체를 json으로 변경할수 없어서 불가능(json으로 변환하느 이유는 produces = MediaTypes.HAL_JSON_VALUE라고 명시했기때문)
+            // 왜?? 내가 선언한 Event 객체는 자바 bean스펙에 준수한 객체이기 때문에 objectmapper는 이 객체를 json형태로 기본 시리얼라이저인 bean시리얼라이저를 사용해 변환한다.
+            // 하지만 errors는 자바 bean스펙을 준수하고있는 객체가 아님... 때문에 objectmapper를 이용해 json형태로 변경하고싶어도 bean시리얼라이저를 사용할때 에러가 발생해 변환할 수 없다.
             // 왜 json으로 변환..? 맨위에 produces = MediaTypes.HAL_JSON_VALUE json형태로 보낼꺼라고 명시함
 
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         eventValidator.validate(eventDto,errors);
         if (errors.hasErrors()){  // 바인딩 외에 발생하면 잘못입력된 데이터가 존재하면 동작
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
-        Event event = Event.builder()
-                .name(eventDto.getName())
-                .description(eventDto.getDescription())
-                .beginEnrollmentDateTime(eventDto.getBeginEnrollmentDateTime())
-                .closeEnrollmentDateTime(eventDto.getCloseEnrollmentDateTime())
-                .beginEventDateTime(eventDto.getBeginEventDateTime())
-                .endEventDateTime(eventDto.getEndEventDateTime())
-                .location(eventDto.getLocation())
-                .basePrice(eventDto.getBasePrice())
-                .maxPrice(eventDto.getMaxPrice())
-                .limitOfEnrollment(eventDto.getLimitOfEnrollment())
-                .build();
+        Event event = eventDto.toEntity();
 
         Event newEvent = eventRepository.save(event); // repository 저장
         URI createUri = linkTo(EventController.class).slash(newEvent.getId()).toUri(); // 링크를 만들고 uri로 변경
