@@ -33,4 +33,19 @@ public class EventDto {
     private int maxPrice; // (optional)
     @Min(0)
     private int limitOfEnrollment;
+
+    public Event toEntity(){
+        return Event.builder()
+                .name(this.name)
+                .description(this.description)
+                .beginEnrollmentDateTime(this.beginEnrollmentDateTime)
+                .closeEnrollmentDateTime(this.closeEnrollmentDateTime)
+                .beginEventDateTime(this.beginEventDateTime)
+                .endEventDateTime(this.endEventDateTime)
+                .location(this.location)
+                .basePrice(this.basePrice)
+                .maxPrice(this.maxPrice)
+                .limitOfEnrollment(this.limitOfEnrollment)
+                .build();
+    }
 }
