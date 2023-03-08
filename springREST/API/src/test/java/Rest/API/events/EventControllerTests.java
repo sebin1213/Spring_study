@@ -82,7 +82,7 @@ public class EventControllerTests {
 //    }
 
     @Test
-    @DisplayName("옳지않은 값이 들어왔을때 에러가 발생하는 테스트")
+    @DisplayName("옳은 값이 들어온 테스트")
     public void createEvent() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -117,7 +117,7 @@ public class EventControllerTests {
     }
 
 //    @Test
-    @DisplayName("properties 옳지않은 값이 들어왔을때 에러가 발생하는 테스트")
+    @DisplayName("properties 옳지않은 값이 들어왔을때 에러가 발생하는 테스트") // properties에 설정 추가 spring.jackson.deserialization.fail-on-unknown-properties=true 모르는 프로퍼티가 넘어가면 fail
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -136,7 +136,7 @@ public class EventControllerTests {
                 .eventStatus(EventStatus.PUBLISHED)
                 .build();
 
-        // 모르는 프로퍼티가 넘어가면 BadRequest
+        // 모르는 필드가(dto니까 간소화시켜놓음) 넘어가면 BadRequest
         mockMvc.perform(post("/api/events/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
@@ -147,7 +147,7 @@ public class EventControllerTests {
     }
 
     @Test
-    @DisplayName("빈값을 입력했을때 에러가 발생하는 테스트")
+    @DisplayName("빈값을 입력했을때 에러가 발생하는 테스트") // vaild, bindingResult 설정해둠
     void createEvent_Bad_Request_Empty_Input() throws Exception{
         EventDto eventDto = EventDto.builder().build();
 
@@ -179,12 +179,14 @@ public class EventControllerTests {
                         .content(objectMapper.writeValueAsString(eventDto))
                 )
                 .andExpect(status().isBadRequest()) //아래와 같은 에러메세지를 가져와야함
-                .andExpect(jsonPath("content[0].objectName").exists())      // 에러의 배열중에 object이름과
-                .andExpect(jsonPath("content[0].field").exists())           // 어떤필드에서 발생한 에러인지
-                .andExpect(jsonPath("content[0].defaultMessage").exists())  // 에러 기본메세지
-                .andExpect(jsonPath("content[0].code").exists())            // 에러 코드는 어떤것이였는지
-                .andExpect(jsonPath("content[0].rejectedValue").exists())   // 에러가 발생한 값은 무엇이였는지
+                .andDo(print())
+                .andExpect(jsonPath("$[0].objectName").exists())      // 에러의 배열중에 object이름과
+                .andExpect(jsonPath("$[0].field").exists())           // 어떤필드에서 발생한 에러인지()
+                .andExpect(jsonPath("$[0].defaultMessage").exists())  // 에러 기본메세지
+                .andExpect(jsonPath("$[0].code").exists())            // 에러 코드는 어떤것이였는지
+                .andExpect(jsonPath("$[0].rejectedValue").exists())   // 에러가 발생한 값은 무엇이였는지
         ;
+
     }
 
 }
