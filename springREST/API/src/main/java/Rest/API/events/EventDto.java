@@ -33,7 +33,7 @@ public class EventDto {
     private int maxPrice; // (optional)
     @Min(0)
     private int limitOfEnrollment;
-
+    
     public Event toEntity(){
         return Event.builder()
                 .name(this.name)
