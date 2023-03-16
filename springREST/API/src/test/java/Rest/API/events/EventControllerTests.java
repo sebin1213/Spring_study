@@ -178,7 +178,7 @@ public class EventControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(eventDto))
                 )
-                .andExpect(status().isBadRequest()) //아래와 같은 에러메세지를 가져와야함
+                .andExpect(status().isBadRequest()) //아래와 같은 에러메세지를 가져와야함 에러메세지를 가져오기위해서는 Error객체를 따로 시리얼라이징해야함(java bean 규약에 안맞아서 objectmapper가 자동적으로 못함못함)
                 .andDo(print())
                 .andExpect(jsonPath("$[0].objectName").exists())      // 에러의 배열중에 object이름과
                 .andExpect(jsonPath("$[0].field").exists())           // 어떤필드에서 발생한 에러인지()
