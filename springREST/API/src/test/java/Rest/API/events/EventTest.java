@@ -37,7 +37,7 @@ class EventTest {
         Assertions.assertThat(event.getDescription()).isEqualTo(description);
     }
 
-    @ParameterizedTest(name = "{index} => basePrice={0}, maxPrice={1}, isFree={2}")
+    @ParameterizedTest(name = "{index} => basePrice={0}, maxPrice={1}, isFree={2}") //테스트 3개만드는것이 아니라 하나의 테스트로 여러 경우의수를 테스트할수 있음
     @MethodSource("testFreeParams")
     public void testFree(int basePrice, int maxPrice, boolean isFree){
         // Given
