@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@WebMvcTest //슬라이스 테스트...웹계층 테스트..? (웹용 bean들만 등록해줌 , reposipory는 빈으로 등록 안함 - 하지만 단위테스트라 보기엔 어려움... dispatcher 서블릿이나 여러 매퍼..컨버터 등등 조합된 상태ㅑ로 진행되는 테스트라)
-@SpringBootTest
+//@WebMvcTest //슬라이스 테스트...웹계층 테스트..? (웹용 bean들만 등록해줌 , reposipory는 빈으로 등록 안함 - 하지만 단위테스트라 보기엔 어려움... dispatcher 서블릿이나 여러 매퍼..컨버터 등등 조합된 상태로 진행되는 테스트라)
+@SpringBootTest//현재 테스트에서는 reposipory를 빈으로 등록하여 저장값까지 확인할 것이기 때문에 SpringBootTest어노테이션 추가
 @AutoConfigureMockMvc
 public class EventControllerTests {
     @Autowired // 웹 서버를 띄우지 않고도 스프링 MVC (DispatcherServlet)가 요청을 처리하는 과정을 확인할 수 있어 컨트롤러 테스트용으로 자주 쓰임.
@@ -107,7 +107,7 @@ public class EventControllerTests {
                         .content(objectMapper.writeValueAsString(event)) // 객체를 json문자열로 변경
                 )   // perform ..요청
                 .andDo(print()) //어떤 응답이 오갔는지 확인 (Location 정보에 헤더에 생성된 이벤트를 조횔할수있는 uri가 담겨있다.
-                .andExpect(status().isCreated())    // 201 상태인지 확인
+                .andExpect(status().isCreated())    // 201 상태인지 확인 200 : isOk, 400 : isBadRequest
                 .andExpect(jsonPath("id").exists()) // db에 들어갈때 자동생성된 값으로 나오는지 확인
                 .andExpect(header().exists(HttpHeaders.LOCATION)) // 헤더에 LOCATION정보 출력
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE)) // 헤더에 CONTENT_TYPE 정보 출력
