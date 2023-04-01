@@ -28,7 +28,7 @@ public class EventControllerTests {
     @Autowired // 웹 서버를 띄우지 않고도 스프링 MVC (DispatcherServlet)가 요청을 처리하는 과정을 확인할 수 있어 컨트롤러 테스트용으로 자주 쓰임.
     MockMvc mockMvc;
 
-    @Autowired
+    @Autowired // spy와 차이점이 뭔지 알아보기...
     ObjectMapper objectMapper;
 
 //    @MockBean // repository는 웹용 빈이 아님 때문에 WebMvcTest 에서 빈으로 등록하지 못해 불러올수 없음, 또한 mock 객체이기 때문에 reture되는 값이 모두 null 값임
