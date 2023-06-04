@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/first-service") // Api Gateway에서 경로를 이렇게 설정함
 public class FirstServiceController {
     @GetMapping("/welcome")
     public String welcome(){
